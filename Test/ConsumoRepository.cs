@@ -23,7 +23,10 @@ namespace Test
         {
             var consumo = new Consumo()
             {
-
+                ConsumoEnergetico = 1,
+                Status = "status",
+                TipoConsumo = "tipo_consumo",
+                DataCriacao = DateTime.Now
             };
 
             _userRepositoryMock.Setup(r => r.SalvarConsumo(consumo)).Returns(Task.CompletedTask);
@@ -39,10 +42,15 @@ namespace Test
         {
             var consumos = new List<Consumo>() {
                 new() {
-               
-
+                    ConsumoEnergetico = 1,
+                    Status = "status",
+                    TipoConsumo = "tipo_consumo",
+                    DataCriacao = DateTime.Now
                 }, new() {
-               
+                    ConsumoEnergetico = 1,
+                    Status = "status",
+                    TipoConsumo = "tipo_consumo",
+                    DataCriacao = DateTime.Now
                 }
             };
 

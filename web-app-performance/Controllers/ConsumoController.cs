@@ -35,7 +35,6 @@ namespace web_app_performance.Controllers
             string user =await db.StringGetAsync(key);
             if (!string.IsNullOrEmpty(user)) {
                 return Ok(user);
-            
             }
             var consumos = await _repository.ListarConsumos();
             string consumosJson = JsonConvert.SerializeObject(consumos);
@@ -69,7 +68,7 @@ namespace web_app_performance.Controllers
             return Ok();
         }
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             await _repository.RemoverConsumo(id);
 

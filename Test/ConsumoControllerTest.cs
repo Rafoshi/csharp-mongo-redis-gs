@@ -45,9 +45,15 @@ namespace Test
         public async Task Get_listarConsumosOk()
         {
             List<Consumo> consumos = new List<Consumo>() { new()  {
-
+                    ConsumoEnergetico = 1,
+                    Status = "status",
+                    TipoConsumo = "tipo_consumo",
+                    DataCriacao = DateTime.Now
                 }
             };
+            _userRepositoryMock.Setup(u => u.ListarConsumos()).ReturnsAsync(consumos);
+            IActionResult result = await _controller.GetConsumo();
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -56,7 +62,10 @@ namespace Test
             //Falha pois o repositorio não esta separado do controller
             Consumo consumo = new()
             {
-
+                ConsumoEnergetico = 1,
+                Status = "status",
+                TipoConsumo = "tipo_consumo",
+                DataCriacao = DateTime.Now
             };
 
             _userRepositoryMock.Setup(r => r.SalvarConsumo(It.IsAny<Consumo>())).Returns(Task.CompletedTask);
@@ -71,7 +80,10 @@ namespace Test
             //Falha pois o repositorio não esta separado do controller
             Consumo consumo = new()
             {
-
+                ConsumoEnergetico = 1,
+                Status = "status",
+                TipoConsumo = "tipo_consumo",
+                DataCriacao = DateTime.Now
             };
 
             _userRepositoryMock.Setup(r => r.AtualizarConsumo(consumo)).Returns(Task.CompletedTask);
@@ -86,11 +98,14 @@ namespace Test
             //Falha pois o repositorio não esta separado do controller
             Consumo consumo = new()
             {
-
+                ConsumoEnergetico = 1,
+                Status = "status",
+                TipoConsumo = "tipo_consumo",
+                DataCriacao = DateTime.Now
             };
 
             _userRepositoryMock.Setup(r => r.SalvarConsumo(It.IsAny<Consumo>())).Returns(Task.CompletedTask);
-            var result = await _controller.Delete(1);
+            var result = await _controller.Delete("teste");
 
             Assert.IsType<OkResult>(result);
         }

@@ -7,6 +7,6 @@ namespace web_app_repository
         Task<IEnumerable<Consumo>> ListarConsumos();
         Task SalvarConsumo(Consumo consumo);
         Task AtualizarConsumo(Consumo consumo);
-        Task RemoverConsumo(int id);
+        Task RemoverConsumo(string id);
     }
 }

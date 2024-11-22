@@ -1,50 +1,36 @@
 ﻿using Dapper;
+using MongoDB.Driver.Core.Configuration;
+using MongoDB.Driver;
 using MySqlConnector;
+using StackExchange.Redis;
 using web_app_domain;
 
 namespace web_app_repository
 {
     public class ConsumoRepository : IConsumoRepository
     {
-        private readonly MySqlConnection mySqlConnection;
-
-        public ConsumoRepository() {
-            string connectionString = "Server=localhost;Database=sys;User=root;Password=123;";
-            mySqlConnection = new MySqlConnection(connectionString);
-
-        }
         public async Task<IEnumerable<Consumo>> ListarConsumos()
         {
-
-            await mySqlConnection.OpenAsync();
-            string query = "select id, consumo_energetico, status, tipo_consumo , data_criacao from consumos;";
-            var consumos = await mySqlConnection.QueryAsync<Consumo>(query);
-            await mySqlConnection.CloseAsync();
-
-
-            return consumos;
-
+            var client = new MongoClient("mongodb://localhost:27017");
+            var _database = client.GetDatabase("consumboDB");
+            var retorno = _database.GetCollection<Consumo>("consumos").Find(_ => true).ToListAsync();
+            return await retorno;
         }
         public async Task SalvarConsumo(Consumo consumo) {
-            await mySqlConnection.OpenAsync();
-            string sql = "insert into consumos(id, consumo_energetico, status, tipo_consumo , data_criacao) values(@Status, @ConsumoEnergetico, @TipoConsumo, @DataCriacao);";
-            await mySqlConnection.ExecuteAsync(sql, consumo);
-            await mySqlConnection.CloseAsync();
+            var client = new MongoClient("mongodb://localhost:27017");
+            var _database = client.GetDatabase("consumboDB");
+            await _database.GetCollection<Consumo>("consumos").InsertOneAsync(consumo);
         }
         public async Task AtualizarConsumo(Consumo consumo) { 
-            await mySqlConnection.OpenAsync();
-            string sql = "Update consumos set status = @Status, consumo_energetico = @ConsumoEnergetico, tipo_consumo=@TipoConsumo,data_criacao = @DataCriacao where Id=@id";
-            await mySqlConnection.ExecuteAsync(sql, consumo);
-            await mySqlConnection.CloseAsync();
-
+            var client = new MongoClient("mongodb://localhost:27017");
+            var _database = client.GetDatabase("consumboDB");
+            await _database.GetCollection<Consumo>("consumos").ReplaceOneAsync(x => x.Id == consumo.Id, consumo);
         }
-        public async Task RemoverConsumo(int id)
+        public async Task RemoverConsumo(string id)
         {
-            await mySqlConnection.OpenAsync();
-            string sql = @"delete from consumos where Id=@id";
-            await mySqlConnection.ExecuteAsync(sql, new { id });
-            await mySqlConnection.CloseAsync();
-
+            var client = new MongoClient("mongodb://localhost:27017");
+            var _database = client.GetDatabase("consumboDB");
+            await _database.GetCollection<Consumo>("consumos").DeleteOneAsync(x => x.Id == id);
         }
 
     }
